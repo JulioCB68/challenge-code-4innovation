@@ -1,13 +1,15 @@
+import { Header } from '../components/header'
+import { Table } from '../components/table/table'
+
 import {
   ArrowDownWideNarrow,
   ArrowUpWideNarrow,
   ChevronLeft,
   ChevronRight,
+  Filter,
   Search,
   X,
 } from 'lucide-react'
-import { Header } from '../components/header'
-import { Table } from '../components/table/table'
 
 function App() {
   return (
@@ -15,8 +17,14 @@ function App() {
       <Header />
       <div className="container mx-auto w-full py-3">
         <div className="items-center gap-2 rounded-md p-4">
-          <h1 className="pb-6 text-2xl font-semibold">Dados diários</h1>
-          <div className="flex items-center justify-between pb-4">
+          <div className="flex items-center justify-between">
+            <h1 className="pb-6 text-2xl font-semibold">Dados diários</h1>
+            <button className="flex items-center rounded-md border bg-white px-3 py-1 hover:bg-gray-100/80 lg:hidden">
+              <Filter className="mr-2 h-4 w-4" />
+              Filtros
+            </button>
+          </div>
+          <div className="hidden items-center justify-between pb-4 lg:flex">
             <div className="flex items-center gap-2">
               <span className="text-sm font-semibold">Filtros:</span>
               <input
@@ -31,12 +39,12 @@ function App() {
               />
               <button
                 type="submit"
-                className="bg-secondary text-secondary-foreground hover:bg-secondary/80 flex items-center rounded-md px-3 py-1"
+                className="flex items-center rounded-md px-3 py-1"
               >
                 <Search className="mr-2 h-4 w-4" />
                 Filtrar resultados
               </button>
-              <button className="border-input bg-background hover:bg-accent hover:text-accent-foreground flex items-center rounded-md border px-3 py-1">
+              <button className="flex items-center rounded-md border px-3 py-1">
                 <X className="mr-2 h-4 w-4" />
                 Remover resultados
               </button>
@@ -56,11 +64,11 @@ function App() {
               Total de 10 item(s)
             </span>
             <div className="flex items-center gap-2">
-              <button className="border-input bg-background hover:bg-accent hover:text-accent-foreground flex h-8 w-8 items-center justify-center rounded-md border p-0">
+              <button className="flex h-8 w-8 items-center justify-center rounded-md border p-0">
                 <ChevronLeft className="h-4 w-4" />
                 <span className="sr-only">Página anterior</span>
               </button>
-              <button className="border-input bg-background hover:bg-accent hover:text-accent-foreground flex h-8 w-8 items-center justify-center rounded-md border p-0">
+              <button className="flex h-8 w-8 items-center justify-center rounded-md border p-0">
                 <ChevronRight className="h-4 w-4" />
                 <span className="sr-only">Próxima página</span>
               </button>
