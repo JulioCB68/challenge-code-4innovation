@@ -13,7 +13,7 @@ function App() {
   return (
     <div className="h-screen dark:bg-zinc-900 dark:text-white">
       <Header />
-      <div className="container mx-auto py-3">
+      <div className="container mx-auto w-full py-3">
         <div className="items-center gap-2 rounded-md p-4">
           <h1 className="pb-6 text-2xl font-semibold">Dados diários</h1>
           <div className="flex items-center justify-between pb-4">
