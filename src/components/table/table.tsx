@@ -56,7 +56,6 @@ export function Table({ pageIndex }: { pageIndex: number }) {
         </thead>
         <tbody>
           {isLoadingTable && <TableSkeleton />}
-
           {table?.map((item) => (
             <>
               <tr className="cursor-pointer border-b border-zinc-700/50 last:border-none hover:bg-zinc-200/50 dark:hover:bg-zinc-800">
@@ -67,6 +66,13 @@ export function Table({ pageIndex }: { pageIndex: number }) {
               </tr>
             </>
           ))}
+          {data && table!.length === 0 && (
+            <tr className="border-b border-zinc-700/50">
+              <td className="w-full p-4 text-base">
+                Nenhnum resultado encontrado!
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>
