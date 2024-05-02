@@ -9,7 +9,16 @@ export default {
     './src/**/*.{ts,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'muted-foreground': '#71717a',
+        'muted-foreground-dark': '#a1a1aa',
+      },
+      backgroundColor: {
+        'accent-dark': '#27272a',
+        accent: '#f4f4f5',
+      },
+    },
   },
   plugins: [],
 }
