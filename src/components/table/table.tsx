@@ -1,26 +1,30 @@
-import { useQuery } from '@tanstack/react-query'
-
-import { getData } from '@/api/request'
 import { useSearchParams } from 'react-router-dom'
-import { columns } from './columns'
+
+import { IData } from '@/types/request'
+import { useEffect } from 'react'
+import { IColumnTable, columns } from './columns'
 import { TableSkeleton } from './table-skeleton'
+
+interface ITableProps {
+  pageIndex: number
+  sort: string
+  data: IData[] | undefined
+  columns: IColumnTable[]
+  isLoading: boolean
+  setTotalCount: (number: number) => void
+}
 
 export function Table({
   pageIndex,
   sort,
-}: {
-  pageIndex: number
-  sort: string
-}) {
+  data,
+  isLoading,
+  setTotalCount,
+}: ITableProps) {
   const [searchParams] = useSearchParams()
 
   const productId = searchParams.get('productId')
   const productName = searchParams.get('productName')
-
-  const { data, isLoading: isLoadingTable } = useQuery({
-    queryKey: ['table', pageIndex, productId, productName, sort],
-    queryFn: getData,
-  })
 
   // Verifica se os parâmetros de busca estão definidos para aplicar os filtros
   const filteredData = data
@@ -57,6 +61,12 @@ export function Table({
   // Aplicação da paginação após a filtragem
   const table = filteredData?.slice(startIndex, endIndex)
 
+  useEffect(() => {
+    if (filteredData) {
+      setTotalCount(filteredData?.length)
+    }
+  }, [filteredData, setTotalCount, data, table])
+
   return (
     <div className="w-full rounded-md border border-zinc-700/50 shadow-md">
       <table className="w-full rounded-md text-sm">
@@ -73,7 +83,7 @@ export function Table({
           </tr>
         </thead>
         <tbody>
-          {isLoadingTable && <TableSkeleton />}
+          {isLoading && <TableSkeleton />}
           {table?.map((item) => (
             <>
               <tr className="cursor-pointer border-b border-zinc-700/50 last:border-none hover:bg-zinc-200/50 dark:hover:bg-zinc-800">

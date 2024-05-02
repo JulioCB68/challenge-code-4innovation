@@ -1,4 +1,4 @@
-interface IColumnTable {
+export interface IColumnTable {
   key: string
   header: string
 }
