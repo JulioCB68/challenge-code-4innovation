@@ -1,7 +1,8 @@
+import { useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 import { IData } from '@/types/request'
-import { useEffect } from 'react'
+import { formatCurrency } from '@/utils/format-currency'
 import { IColumnTable, columns } from './columns'
 import { TableSkeleton } from './table-skeleton'
 
@@ -89,8 +90,8 @@ export function Table({
               <tr className="cursor-pointer border-b border-zinc-700/50 last:border-none hover:bg-zinc-200/50 dark:hover:bg-zinc-800">
                 <td className="p-4">{item.portfolioProductId}</td>
                 <td className="p-4">{item.productName}</td>
-                <td className="p-4">{item.correctedQuota}</td>
-                <td className="p-4 text-right">{item.value}</td>
+                <td className="p-4">{formatCurrency(item.correctedQuota)}</td>
+                <td className="p-4 text-right">{formatCurrency(item.value)}</td>
               </tr>
             </>
           ))}
