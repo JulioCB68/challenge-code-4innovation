@@ -5,32 +5,50 @@ import { useSearchParams } from 'react-router-dom'
 import { columns } from './columns'
 import { TableSkeleton } from './table-skeleton'
 
-export function Table({ pageIndex }: { pageIndex: number }) {
+export function Table({
+  pageIndex,
+  sort,
+}: {
+  pageIndex: number
+  sort: string
+}) {
   const [searchParams] = useSearchParams()
 
   const productId = searchParams.get('productId')
   const productName = searchParams.get('productName')
 
   const { data, isLoading: isLoadingTable } = useQuery({
-    queryKey: ['table', pageIndex, productId, productName],
+    queryKey: ['table', pageIndex, productId, productName, sort],
     queryFn: getData,
   })
 
   // Verifica se os parâmetros de busca estão definidos para aplicar os filtros
-  const filteredData = data?.filter((item) => {
-    if (productId && productName) {
-      return (
-        String(item.portfolioProductId) === productId &&
-        item.productName === productName
-      )
-    } else if (productId) {
-      return String(item.portfolioProductId) === productId
-    } else if (productName) {
-      return item.productName === productName
-    } else {
-      return true // Retorna verdadeiro se nenhum filtro estiver definido
-    }
-  })
+  const filteredData = data
+    ?.filter((item) => {
+      let matchesFilter = true
+
+      // Aplicar filtro pelo ID DO produto, se definido
+      if (productId && String(item.portfolioProductId) !== productId) {
+        matchesFilter = false
+      }
+
+      // Aplicar filtro pelo nome do produto, se definido
+      if (productName && !item.productName.includes(productName)) {
+        matchesFilter = false
+      }
+
+      return matchesFilter
+    })
+    .sort((a, b) => {
+      // Aplicar ordenação com base na direção definida
+      if (sort === 'ASC') {
+        return a.value - b.value
+      } else if (sort === 'DESC') {
+        return b.value - a.value
+      } else {
+        return 0 // Não fazer ordenação se a direção não estiver definida
+      }
+    })
 
   // Cálculo dos índices de início e fim para a paginação
   const startIndex = pageIndex * 10

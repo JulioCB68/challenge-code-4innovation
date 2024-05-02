@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { z } from 'zod'
 import { Header } from '../components/header'
@@ -13,6 +14,7 @@ import {
   Search,
   X,
 } from 'lucide-react'
+
 import { useForm } from 'react-hook-form'
 
 const tableFiltersSchema = z.object({
@@ -84,6 +86,12 @@ function App() {
     })
   }
 
+  const [sort, setSort] = useState('')
+
+  function handleSortDirection(direction: string) {
+    setSort(direction)
+  }
+
   return (
     <div className="h-auto min-h-screen dark:bg-zinc-900 dark:text-white">
       <Header />
@@ -130,15 +138,21 @@ function App() {
               </button>
             </div>
             <div className="flex items-center gap-2">
-              <button className="dark:bg-dark-accent flex h-10 w-10 items-center justify-center rounded-md border p-2 hover:bg-accent dark:hover:bg-accent-dark">
+              <button
+                onClick={() => handleSortDirection('DESC')}
+                className="dark:bg-dark-accent flex h-10 w-10 items-center justify-center rounded-md border p-2 hover:bg-accent dark:hover:bg-accent-dark"
+              >
                 <ArrowDownWideNarrow className="h-4 w-4" />
               </button>
-              <button className="items dark:bg-dark-accent flex h-10 w-10 justify-center rounded-md border p-2 hover:bg-accent dark:hover:bg-accent-dark">
+              <button
+                onClick={() => handleSortDirection('ASC')}
+                className="items dark:bg-dark-accent flex h-10 w-10 justify-center rounded-md border p-2 hover:bg-accent dark:hover:bg-accent-dark"
+              >
                 <ArrowUpWideNarrow className="h-4 w-4" />
               </button>
             </div>
           </div>
-          <Table pageIndex={pageIndex} />
+          <Table pageIndex={pageIndex} sort={sort} />
           <div className="flex items-center justify-between pt-4">
             <span className="text-sm text-muted-foreground">
               Total de 10 item(s)
