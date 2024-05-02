@@ -2,9 +2,10 @@ import { useQuery } from '@tanstack/react-query'
 
 import { getData } from '@/api/request'
 import { columns } from './columns'
+import { TableSkeleton } from './table-skeleton'
 
 export function Table({ pageIndex }: { pageIndex: number }) {
-  const { data: table } = useQuery({
+  const { data: table, isLoading: isLoadingTable } = useQuery({
     queryKey: ['table', pageIndex],
     queryFn: getData,
   })
@@ -29,6 +30,8 @@ export function Table({ pageIndex }: { pageIndex: number }) {
           </tr>
         </thead>
         <tbody>
+          {isLoadingTable && <TableSkeleton />}
+
           {currentData?.map((item) => (
             <>
               <tr className="cursor-pointer border-b border-zinc-700/50 last:border-none hover:bg-zinc-200/50 dark:hover:bg-zinc-800">
