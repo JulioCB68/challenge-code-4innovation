@@ -13,7 +13,7 @@ import {
 
 function App() {
   return (
-    <div className="h-auto dark:bg-zinc-900 dark:text-white">
+    <div className="h-auto min-h-screen dark:bg-zinc-900 dark:text-white">
       <Header />
       <div className="container mx-auto w-full py-3">
         <div className="items-center gap-2 rounded-md p-4">
