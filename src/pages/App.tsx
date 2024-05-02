@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { Header } from '../components/header'
 import { Table } from '../components/table/table'
 
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
   ArrowDownWideNarrow,
   ArrowUpWideNarrow,
@@ -12,6 +13,14 @@ import {
   Search,
   X,
 } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+
+const tableFiltersSchema = z.object({
+  productId: z.string().optional(),
+  productName: z.string().optional(),
+})
+
+type TableFiltersSchema = z.infer<typeof tableFiltersSchema>
 
 function App() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -29,11 +38,60 @@ function App() {
     })
   }
 
+  const productId = searchParams.get('productId')
+  const productName = searchParams.get('productName')
+
+  const { register, handleSubmit, reset } = useForm<TableFiltersSchema>({
+    resolver: zodResolver(tableFiltersSchema),
+    defaultValues: {
+      productId: productId ?? '',
+      productName: productName ?? '',
+    },
+  })
+
+  function handleFilter({ productId, productName }: TableFiltersSchema) {
+    setSearchParams((state) => {
+      if (productId) {
+        state.set('productId', productId)
+      } else {
+        state.delete('productId')
+      }
+
+      if (productName) {
+        state.set('productName', productName)
+      } else {
+        state.delete('productName')
+      }
+
+      state.set('page', '1')
+
+      return state
+    })
+  }
+
+  function handleClearFilters() {
+    setSearchParams((state) => {
+      state.delete('productId')
+      state.delete('productName')
+      state.set('page', '1')
+
+      return state
+    })
+
+    reset({
+      productId: '',
+      productName: '',
+    })
+  }
+
   return (
     <div className="h-auto min-h-screen dark:bg-zinc-900 dark:text-white">
       <Header />
       <div className="container mx-auto w-full py-3">
-        <div className="items-center gap-2 rounded-md p-4">
+        <form
+          onSubmit={handleSubmit(handleFilter)}
+          className="items-center gap-2 rounded-md p-4"
+        >
           <div className="flex items-center justify-between">
             <h1 className="pb-6 text-2xl font-semibold">Dados diários</h1>
             <button className="flex items-center rounded-md border bg-white px-3 py-1 hover:bg-gray-100/80 lg:hidden">
@@ -48,11 +106,13 @@ function App() {
                 type="text"
                 className="flex h-10 w-auto rounded-md border border-zinc-500 bg-transparent px-3 py-2 text-sm ring-offset-transparent file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="ID do produto"
+                {...register('productId')}
               />
               <input
                 type="text"
                 className="flex h-10 w-[320px] rounded-md border border-zinc-500 bg-transparent px-3 py-2 text-sm ring-offset-transparent file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="Nome do produto"
+                {...register('productName')}
               />
               <button
                 type="submit"
@@ -61,7 +121,10 @@ function App() {
                 <Search className="mr-2 h-4 w-4" />
                 Filtrar resultados
               </button>
-              <button className="dark:bg-dark-accent flex h-10 items-center whitespace-nowrap rounded-md border px-2.5 hover:bg-accent dark:hover:bg-accent-dark">
+              <button
+                onClick={handleClearFilters}
+                className="dark:bg-dark-accent flex h-10 items-center whitespace-nowrap rounded-md border px-2.5 hover:bg-accent dark:hover:bg-accent-dark"
+              >
                 <X className="mr-2 h-4 w-4" />
                 Remover filtros
               </button>
@@ -99,7 +162,7 @@ function App() {
               </button>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   )
