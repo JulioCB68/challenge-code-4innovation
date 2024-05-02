@@ -1,3 +1,5 @@
+import { useSearchParams } from 'react-router-dom'
+import { z } from 'zod'
 import { Header } from '../components/header'
 import { Table } from '../components/table/table'
 
@@ -12,6 +14,21 @@ import {
 } from 'lucide-react'
 
 function App() {
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const pageIndex = z.coerce
+    .number()
+    .transform((page) => page - 1)
+    .parse(searchParams.get('page') ?? '1')
+
+  function handlePaginate(pageIndex: number) {
+    setSearchParams((state) => {
+      state.set('page', (pageIndex + 1).toString())
+
+      return state
+    })
+  }
+
   return (
     <div className="h-auto min-h-screen dark:bg-zinc-900 dark:text-white">
       <Header />
@@ -29,46 +46,54 @@ function App() {
               <span className="text-sm font-semibold">Filtros:</span>
               <input
                 type="text"
-                className="placeholder:text-muted-foreground flex h-10 w-auto rounded-md border border-zinc-500 bg-transparent px-3 py-2 text-sm ring-offset-transparent file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-10 w-auto rounded-md border border-zinc-500 bg-transparent px-3 py-2 text-sm ring-offset-transparent file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="ID do produto"
               />
               <input
                 type="text"
-                className="placeholder:text-muted-foreground flex h-10 w-[320px] rounded-md border border-zinc-500 bg-transparent px-3 py-2 text-sm ring-offset-transparent file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-10 w-[320px] rounded-md border border-zinc-500 bg-transparent px-3 py-2 text-sm ring-offset-transparent file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="Nome do produto"
               />
               <button
                 type="submit"
-                className="bg-muted-foreground/15 hover:bg-muted-foreground/25 flex h-10 items-center rounded-md px-2.5"
+                className="flex h-10 items-center rounded-md bg-muted-foreground/15 px-2.5 hover:bg-muted-foreground/25"
               >
                 <Search className="mr-2 h-4 w-4" />
                 Filtrar resultados
               </button>
-              <button className="hover:bg-accent dark:hover:bg-accent-dark dark:bg-dark-accent flex h-10 items-center whitespace-nowrap rounded-md border px-2.5">
+              <button className="dark:bg-dark-accent flex h-10 items-center whitespace-nowrap rounded-md border px-2.5 hover:bg-accent dark:hover:bg-accent-dark">
                 <X className="mr-2 h-4 w-4" />
                 Remover filtros
               </button>
             </div>
             <div className="flex items-center gap-2">
-              <button className="hover:bg-accent dark:hover:bg-accent-dark dark:bg-dark-accent flex h-10 w-10 items-center justify-center rounded-md border p-2">
+              <button className="dark:bg-dark-accent flex h-10 w-10 items-center justify-center rounded-md border p-2 hover:bg-accent dark:hover:bg-accent-dark">
                 <ArrowDownWideNarrow className="h-4 w-4" />
               </button>
-              <button className="items hover:bg-accent dark:hover:bg-accent-dark dark:bg-dark-accent flex h-10 w-10 justify-center rounded-md border p-2">
+              <button className="items dark:bg-dark-accent flex h-10 w-10 justify-center rounded-md border p-2 hover:bg-accent dark:hover:bg-accent-dark">
                 <ArrowUpWideNarrow className="h-4 w-4" />
               </button>
             </div>
           </div>
-          <Table />
+          <Table pageIndex={pageIndex} />
           <div className="flex items-center justify-between pt-4">
-            <span className="text-muted-foreground text-sm">
+            <span className="text-sm text-muted-foreground">
               Total de 10 item(s)
             </span>
             <div className="flex items-center gap-2">
-              <button className="hover:bg-accent dark:hover:bg-accent-dark dark:bg-dark-accent flex h-10 w-10 items-center justify-center rounded-md border">
+              <button
+                onClick={() => handlePaginate(pageIndex - 1)}
+                className="dark:bg-dark-accent flex h-10 w-10 items-center justify-center rounded-md border hover:bg-accent disabled:pointer-events-none disabled:opacity-50 dark:hover:bg-accent-dark"
+                disabled={pageIndex === 0}
+              >
                 <ChevronLeft className="h-4 w-4" />
                 <span className="sr-only">Página anterior</span>
               </button>
-              <button className="hover:bg-accent bg-dark-accent dark:hover:bg-accent-dark dark:bg-dark-accent flex h-10 w-10 items-center justify-center rounded-md border">
+              <button
+                onClick={() => handlePaginate(pageIndex + 1)}
+                className="bg-dark-accent dark:bg-dark-accent flex h-10 w-10 items-center justify-center rounded-md border hover:bg-accent disabled:pointer-events-none disabled:opacity-50 dark:hover:bg-accent-dark"
+                disabled={pageIndex === 1}
+              >
                 <ChevronRight className="h-4 w-4" />
                 <span className="sr-only">Próxima página</span>
               </button>
