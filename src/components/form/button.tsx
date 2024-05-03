@@ -13,7 +13,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
       type={type}
       ref={ref}
       className={twMerge(
-        'flex h-10 w-10 items-center justify-center whitespace-nowrap rounded-md border hover:bg-accent disabled:pointer-events-none disabled:opacity-50 dark:hover:bg-accent-dark',
+        'flex h-10 w-10 items-center justify-center whitespace-nowrap rounded-md border hover:bg-accent/40 disabled:pointer-events-none disabled:opacity-50 dark:hover:bg-accent-dark',
         className,
       )}
     />

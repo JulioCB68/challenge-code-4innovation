@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 
 import { IData } from '@/types/request'
 import { formatCurrency } from '@/utils/format-currency'
-import { IColumnTable, columns } from './columns'
+import { IColumnTable } from './columns'
 import { TableSkeleton } from './table-skeleton'
 
 interface ITableProps {
@@ -20,6 +20,7 @@ export function Table({
   sort,
   data,
   isLoading,
+  columns,
   setTotalCount,
 }: ITableProps) {
   const [searchParams] = useSearchParams()
@@ -27,17 +28,14 @@ export function Table({
   const productId = searchParams.get('productId')
   const productName = searchParams.get('productName')
 
-  // Verifica se os parâmetros de busca estão definidos para aplicar os filtros
   const filteredData = data
     ?.filter((item) => {
       let matchesFilter = true
 
-      // Aplicar filtro pelo ID DO produto, se definido
       if (productId && String(item.portfolioProductId) !== productId) {
         matchesFilter = false
       }
 
-      // Aplicar filtro pelo nome do produto, se definido
       if (productName && !item.productName.includes(productName)) {
         matchesFilter = false
       }
@@ -45,31 +43,28 @@ export function Table({
       return matchesFilter
     })
     .sort((a, b) => {
-      // Aplicar ordenação com base na direção definida
       if (sort === 'ASC') {
         return a.value - b.value
       } else if (sort === 'DESC') {
         return b.value - a.value
       } else {
-        return 0 // Não fazer ordenação se a direção não estiver definida
+        return 0
       }
     })
 
-  // Cálculo dos índices de início e fim para a paginação
   const startIndex = pageIndex * 10
   const endIndex = (pageIndex + 1) * 10
 
-  // Aplicação da paginação após a filtragem
   const table = filteredData?.slice(startIndex, endIndex)
 
   useEffect(() => {
     if (filteredData) {
       setTotalCount(filteredData?.length)
     }
-  }, [filteredData, setTotalCount, data, table])
+  }, [filteredData, setTotalCount])
 
   return (
-    <div className="w-full rounded-md border border-zinc-700/50 shadow-md">
+    <div className="w-full overflow-x-auto rounded-md border border-zinc-700/50 shadow-md">
       <table className="w-full rounded-md text-sm">
         <thead>
           <tr className="">

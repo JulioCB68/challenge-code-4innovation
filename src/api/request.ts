@@ -13,6 +13,6 @@ export async function getData(): Promise<IData[]> {
       } catch (error) {
         reject(error)
       }
-    }, 2000)
+    }, 1000)
   })
 }

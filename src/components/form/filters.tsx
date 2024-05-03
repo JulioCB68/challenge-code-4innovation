@@ -70,6 +70,7 @@ export default function Filters({ onChangeSort }: IFilterPorps) {
   function handleSortDirection(direction: string) {
     onChangeSort(direction)
   }
+
   return (
     <form
       onSubmit={handleSubmit(handleFilter)}

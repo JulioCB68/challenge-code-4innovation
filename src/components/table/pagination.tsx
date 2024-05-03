@@ -1,6 +1,6 @@
 import { useSearchParams } from 'react-router-dom'
 
-import Button from './form/button'
+import Button from '../form/button'
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
